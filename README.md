@@ -38,11 +38,11 @@ Demonstrate your understanding of this week's concepts by answering the followin
 
 3. What does bcrypt do to slow down attackers?
 
-// It hashes the round multipole times so that the attacker needs to know not only the hashing function but also how many rounds were used to generate the hash.
+// It hashes the round multipule times so that the attacker needs to know not only the hashing function but also how many rounds were used to generate the hash.
 
 4. What are the three parts of the JSON Web Token?
 
-// The header, the payload, & the signature.
+// The header, the payload, and the signature. 
 
 ## Project Set Up
 

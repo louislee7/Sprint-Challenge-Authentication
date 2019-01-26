@@ -1,11 +1,12 @@
 const axios = require('axios');
+//configuring server
 const bcrypt = require('bcryptjs');
 const knex = require('knex');
 const dbConfig = require('../knexfile');
 
 const db = knex(dbConfig.development);
 
-const { authenticate } = require('../auth/authenticate');
+const { authenticate, generateToken } = require('../auth/authenticate');
 
 module.exports = server => {
   server.post('/api/register', register);
@@ -15,10 +16,10 @@ module.exports = server => {
 
 function register(req, res) {
   // implement user registration
-  const user = req.body;
-  if (user.username && user.password) {
-    user.password = bcrypt.hashSync(user.password, 12);
-    db('user').insert(user)
+  const newUser = req.body;
+  if (newUser.username && newUser.password) {
+    newUser.password = bcrypt.hashSync(newUser.password, 12);
+    db('users').insert(newUser)
       .then(ids => {
         const id = ids[0];
         res.status(201).json(id);
@@ -34,10 +35,12 @@ function register(req, res) {
 function login(req, res) {
   // implement user login
   const creds = req.body;
-  db('users').where('username', username)
+  db('users').where('username', creds.username)
     .then(user => {
+      // console.log(user);
       if (user.length && bcrypt.compareSync(creds.password, user[0].password)) {
-        res.send("You have succesfully logged in");
+        const token = generateToken(creds.username);
+        res.json({ token });
       } else {
         res.status(201).send("Invalid username or password");
       }

@@ -15,10 +15,10 @@ module.exports = server => {
 
 function register(req, res) {
   // implement user registration
-  const creds = req.body;
-  if (creds.username && creds.password) {
-    creds.password = bcrypt.hashSync(creds.password, 12);
-    db('user').insert(creds)
+  const user = req.body;
+  if (user.username && user.password) {
+    user.password = bcrypt.hashSync(user.password, 12);
+    db('user').insert(user)
       .then(ids => {
         const id = ids[0];
         res.status(201).json(id);
@@ -33,6 +33,18 @@ function register(req, res) {
 
 function login(req, res) {
   // implement user login
+  const creds = req.body;
+  db('users').where('username', username)
+    .then(user => {
+      if (user.length && bcrypt.compareSync(creds.password, user[0].password)) {
+        res.send("You have succesfully logged in");
+      } else {
+        res.status(201).send("Invalid username or password");
+      }
+    })
+    .catch(err => {
+      res.status(500).send('Failed to log in');
+    });
 }
 
 function getJokes(req, res) {
